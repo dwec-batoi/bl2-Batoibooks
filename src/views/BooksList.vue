@@ -28,7 +28,8 @@ import Pencil from 'vue-material-design-icons/Pencil.vue'
 
 import BookItem from '../components/BookItem.vue'
 import BooksRepository from '../repositories/books.repository'
-import { store } from '../store'
+import { useStore } from '../stores/index.js';
+import { mapActions } from 'pinia';
 
 export default {
   components: {
@@ -47,13 +48,14 @@ export default {
     this.getBooks()
   },
   methods: {
+    ...mapActions(useStore, ['setMessageAction']),
     async getBooks() {
       try {
         const response = await this.repository.getAllBooks()
         this.books = response
       } catch (error) {
         console.error(error.message)
-        store.setMessageAction(error.message)
+        this.setMessageAction(error.message)
       }
     },
     async handleDelete(id, index, idModule) {
@@ -70,7 +72,7 @@ export default {
         await this.repository.removeBook(id)
         this.books.splice(index, 1)
       } catch (error) {
-        store.setMessageAction(error.message)
+        this.setMessageAction(error.message)
       }
     }
   }

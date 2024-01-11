@@ -21,17 +21,19 @@
 </template>
 
 <script>
-import { store } from '../store/index'
+import { useStore } from '../stores/index.js';
+import { mapState, mapActions } from 'pinia';
 
 export default {
   computed: {
-    messages() {
-      return store.state.messages
-    }
+    ...mapState(useStore, {
+      messages: 'messages',
+    })
   },
   methods: {
+    ...mapActions(useStore, ['clearMessageAction']),
     remove(index) {
-      store.clearMessageAction(index)
+      this.clearMessageAction(index)
     }
   }
 }
