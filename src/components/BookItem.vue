@@ -1,9 +1,9 @@
 <template>
   <div class="card">
-    <img :src="book.photo" :alt="'Libro: ' + book.id" />
+    <img :src="'/img/' + book.photo" :alt="'Libro: ' + book.id" />
     <div>
-      <h5>{{ book.idModule + ' (' + book.id + ')' }}</h5>
-      <h6>{{ book.publisher }}</h6>
+      <h2>{{ getModuleByCode(book.idModule).cliteral + ' (' + book.id + ')' }}</h2>
+      <h3>{{ book.publisher }}</h3>
       <p>Precio: {{ book.price.toFixed(2) }} €</p>
       <p>Páginas: {{ book.pages }}</p>
       <p>Estado: {{ book.status }}</p>
@@ -15,6 +15,9 @@
 </template>
 
 <script>
+import { useStore } from '../stores/index.js';
+import { mapState } from 'pinia';
+
 export default {
   props: {
     book: {
@@ -22,6 +25,9 @@ export default {
       required: true
     }
   },
+  computed: {
+    ...mapState(useStore, ['getModuleByCode']),
+  }
 }
 </script>
 
@@ -29,5 +35,11 @@ export default {
 .card {
   margin: 1em;
   background-color: beige;
+}
+
+.card img {
+  height: 150px;
+  margin:auto;
+        display:block;
 }
 </style>

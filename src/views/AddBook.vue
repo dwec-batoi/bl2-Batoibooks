@@ -62,12 +62,13 @@
 
 <script>
 import BooksRepository from '../repositories/books.repository'
-import ModulesRepository from '../repositories/modules.repository'
-import { store } from '../store'
+import { useStore } from '../stores/index.js';
+import { mapState, mapActions } from 'pinia';
 
 export default {
   props: ['id'],
   computed: {
+    ...mapState(useStore, ['modules']),
     editing() {
       return !!this.id
     },
@@ -85,12 +86,10 @@ export default {
   data() {
     return {
       book: { idModule: '' },
-      modules: [],
       repository: new BooksRepository()
     }
   },
   mounted() {
-    this.loadModules()
     if (this.editing) {
       this.loadBook()
     } else {
@@ -98,15 +97,7 @@ export default {
     }
   },
   methods: {
-    async loadModules() {
-      const repository = new ModulesRepository()
-    try {
-      this.modules = await repository.getAllModules()
-    } catch (error) {
-      store.setMessageAction(error.message)
-    }
-
-    },
+    ...mapActions(useStore, ['setMessageAction']),
     async loadBook() {
       try {
         const response = await this.repository.getBookById(this.id)

@@ -4,16 +4,18 @@
       v-for="(book, index) in books"
       :key="book.id"
       :book="book"
-      @remove="delBook(book.id, index)"
     >
       <div>
-        <button class="cart add-cart" title="Añadir al carrito">
+        <button class="cart add-cart" title="Añadir al carrito" 
+          @click="addBookToCart(book)"
+          :disabled="isBookInCart(book.id)"
+        >
           <cart-plus></cart-plus>
         </button>
         <button class="edit" title="Editar" @click="$router.push('edit-book/' + book.id)">
           <pencil></pencil>
         </button>
-        <button class="delete" title="Eliminar" @click="handleDelete(book.id, index, book.idModule)">
+        <button class="delete" title="Eliminar" @click="handleDelete(book, index)">
           <delete></delete>
         </button>
       </div>  
@@ -48,7 +50,7 @@ export default {
     this.getBooks()
   },
   methods: {
-    ...mapActions(useStore, ['setMessageAction']),
+    ...mapActions(useStore, ['setMessageAction', 'addBookToCart', 'isBookInCart']),
     async getBooks() {
       try {
         const response = await this.repository.getAllBooks()
@@ -58,13 +60,13 @@ export default {
         this.setMessageAction(error.message)
       }
     },
-    async handleDelete(id, index, idModule) {
+    async handleDelete(book, index) {
       if (
         confirm(
           'Vas a borrar el libro con id ' +
-            id +
+            book.id +
             ' del módulo "' +
-            idModule +
+            book.idModule +
             '"'
         )
       ) {
